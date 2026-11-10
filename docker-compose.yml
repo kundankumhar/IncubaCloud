@@ -1,0 +1,45 @@
+services:
+  database:
+    image: postgres:16-alpine
+    container_name: incubacloud-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: incubacloud
+      POSTGRES_USER: incuba
+      POSTGRES_PASSWORD: incuba_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - incubacloud_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U incuba -d incubacloud"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  api:
+    build: ./apps/api
+    container_name: incubacloud-api
+    restart: unless-stopped
+    environment:
+      PORT: 4000
+      DATABASE_URL: postgresql://incuba:incuba_dev_password@database:5432/incubacloud
+      JWT_SECRET: ${JWT_SECRET:-local-development-secret-change-before-deploy}
+      CLIENT_ORIGIN: http://localhost:3000
+    ports:
+      - "4000:4000"
+    depends_on:
+      database:
+        condition: service_healthy
+  web:
+    build: ./apps/web
+    container_name: incubacloud-web
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000/api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+volumes:
+  incubacloud_data:
