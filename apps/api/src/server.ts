@@ -118,4 +118,4 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   res.status(500).json({ error: 'Unexpected server error' });
 });
 
-app.listen(port, () => console.log(`IncubaCloud API listening on http://localhost:${port}`));
+app.listen(port, '0.0.0.0', () => console.log(`IncubaCloud API listening on port ${port}`));
