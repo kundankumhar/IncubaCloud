@@ -9,6 +9,7 @@ import { Pool } from 'pg';
 import { z } from 'zod';
 
 const app = express();
+app.set('trust proxy', 1);
 const port = Number(process.env.PORT || 4000);
 const jwtSecret = process.env.JWT_SECRET || 'local-development-secret-change-before-deploy';
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
