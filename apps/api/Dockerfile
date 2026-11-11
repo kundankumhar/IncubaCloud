@@ -11,7 +11,7 @@ COPY apps/api/package.json ./apps/api/package.json
 COPY apps/web/package.json ./apps/web/package.json
 
 # Install dependencies
-RUN npm ci
+RUN npm install
 
 # Copy backend source files
 COPY apps/api/tsconfig.json ./apps/api/tsconfig.json
