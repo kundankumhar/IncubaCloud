@@ -1,8 +1,19 @@
+
 FROM node:20-alpine
+
 WORKDIR /app
+
 COPY package*.json ./
+COPY apps/api/package.json ./apps/api/package.json
+COPY apps/web/package.json ./apps/web/package.json
+
 RUN npm install
+
 COPY . .
-RUN npm run build
+
+RUN npm run build --workspace=@incubacloud/web
+
 EXPOSE 3000
-CMD ["npm","start"]
+
+CMD ["npm", "run", "start", "--workspace=@incubacloud/web"]
+
